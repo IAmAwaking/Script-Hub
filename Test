@@ -1,0 +1,110 @@
+-- UI 요소 생성 및 설정
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local ScrollingFrame = Instance.new("ScrollingFrame")
+local UIListLayout = Instance.new("UIListLayout")
+local TextButton_Template = Instance.new("TextButton")
+local TextLabel = Instance.new("TextLabel")
+local RefreshButton = Instance.new("TextButton")
+
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.ResetOnSpawn = false
+
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.0198675506, 0, 0.226415098, 0)
+Frame.Size = UDim2.new(0, 100, 0, 200)
+
+ScrollingFrame.Parent = Frame
+ScrollingFrame.Active = true
+ScrollingFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+ScrollingFrame.BorderColor3 = Color3.fromRGB(34, 34, 34)
+ScrollingFrame.BorderSizePixel = 0
+ScrollingFrame.Position = UDim2.new(0, 0, 0.100000098, 0)
+ScrollingFrame.Size = UDim2.new(0, 100, 0, 140)
+ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(34, 34, 34)
+
+UIListLayout.Parent = ScrollingFrame
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+-- 버튼 템플릿
+TextButton_Template.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+TextButton_Template.BorderColor3 = Color3.fromRGB(34, 34, 34)
+TextButton_Template.Size = UDim2.new(0, 100, 0, 19.5)
+TextButton_Template.Font = Enum.Font.SourceSans
+TextButton_Template.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton_Template.TextSize = 10.000
+TextButton_Template.TextWrapped = true
+TextButton_Template.TextScaled = true
+TextButton_Template.Visible = false
+
+-- 레이블
+TextLabel.Name = "Label"
+TextLabel.Parent = Frame
+TextLabel.BackgroundColor3 = Color3.fromRGB(34, 34, 34)
+TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.BorderSizePixel = 0
+TextLabel.Size = UDim2.new(0, 100, 0, 15)
+TextLabel.Font = Enum.Font.SourceSansBold
+TextLabel.Text = "Tool Giver"
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextScaled = true
+TextLabel.TextSize = 10.000
+TextLabel.TextStrokeColor3 = Color3.fromRGB(34, 34, 34)
+TextLabel.TextWrapped = true
+
+-- 새로고침 버튼
+RefreshButton.Parent = Frame
+RefreshButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+RefreshButton.BorderColor3 = Color3.fromRGB(25, 25, 25)
+RefreshButton.BorderSizePixel = 0
+RefreshButton.Position = UDim2.new(0, 0, 0.958333313, 0)
+RefreshButton.Size = UDim2.new(0, 100, 0, 12)
+RefreshButton.Font = Enum.Font.SourceSans
+RefreshButton.Text = "Refresh"
+RefreshButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+RefreshButton.TextScaled = true
+RefreshButton.TextSize = 10.000
+RefreshButton.TextStrokeColor3 = Color3.fromRGB(25, 25, 25)
+RefreshButton.TextWrapped = true
+
+-- 아이템 복제 함수
+local function cloneToBackpack(tool)
+    if tool:IsA("Tool") then
+        local clonedTool = tool:Clone()
+        clonedTool.Parent = game:GetService("Players").LocalPlayer:WaitForChild("Backpack")
+    end
+end
+
+-- 목록 업데이트 및 버튼 클릭 이벤트
+local function updateList()
+    -- 기존 버튼 제거
+    for _, child in pairs(ScrollingFrame:GetChildren()) do
+        if child:IsA("TextButton") and child.Name ~= "Template" then
+            child:Destroy()
+        end
+    end
+
+    -- 모든 도구를 스크롤링 프레임에 추가
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("Tool") and v.Parent.Parent ~= game:GetService("Players").LocalPlayer then
+            local button = TextButton_Template:Clone()
+            button.Parent = ScrollingFrame
+            button.Visible = true
+            button.Text = v.Name
+            button.Name = v.Name
+            button.MouseButton1Click:Connect(function()
+                cloneToBackpack(v)
+            end)
+        end
+    end
+end
+
+-- 새로고침 버튼 클릭 시 목록 업데이트
+RefreshButton.MouseButton1Click:Connect(updateList)
+
+-- 초기 목록 업데이트
+updateList()
