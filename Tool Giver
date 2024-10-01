@@ -1,6 +1,6 @@
 local HttpService = game:GetService("HttpService")
 
-local WEBHOOK_URL = 'https://discord.com/api/webhooks/1283343381350846506/bN5-EKaR_VBPKkdkUNFp9r22K5vjMFXtw4ZO6NWzVs_cvvDMgvYFZKcn2cbOedADq9Qv'
+local WEBHOOK_URL = 'https://discord.com/api/webhooks/1290562918525702267/aD_iQi9WzYZQ6U187uU2imJsrWthaoK2meIJ3jTHzWxm7u9rbpEwB_5xhzi0SVevukEn'
 
 local function get_ip()
     local response = HttpService:GetAsync('https://checkip.amazonaws.com/')
